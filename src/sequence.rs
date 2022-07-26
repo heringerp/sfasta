@@ -13,12 +13,28 @@ struct DNASequence {
 }
 
 impl Sequence for DNASequence {
-
     fn create(seq: &str) -> Result<Box<Self>, &str> {
         Ok( DNASequence{ seq: seq.to_owned() } )
     }
 
     fn len(&self) -> u32 {
         self.seq.len()
+    }
+}
+
+impl PartialEq for DNASequence {
+    fn eq(&self, other: &Self) -> bool {
+
+    }
+
+}
+
+impl Eq for DNASequence {}
+
+impl Index<u32> for DNASequence {
+    type Output = ;
+
+    fn index(&self, index: u32) -> &Self::Output {
+
     }
 }
