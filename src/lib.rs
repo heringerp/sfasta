@@ -1,5 +1,7 @@
 mod sequence;
 
+pub use crate::sequence::dna_sequence;
+
 #[cfg(test)]
 mod tests {
     #[test]
