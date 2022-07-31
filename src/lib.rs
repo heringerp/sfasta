@@ -1,4 +1,5 @@
 mod sequence;
+mod parser;
 
 pub use crate::sequence::dna_sequence;
 
