@@ -1,5 +1,6 @@
 mod sequence;
 mod parser;
+mod sequence_error;
 
 pub use crate::sequence::dna_sequence;
 
