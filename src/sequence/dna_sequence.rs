@@ -1,5 +1,5 @@
-use std::ops::Index;
-use crate::sequence::Sequence;
+use crate::sequence::Symbol;
+use crate::sequence::complimentary_sequence::{Complimentary, ComplimentarySequence};
 use crate::sequence_error::SequenceError;
 
 #[derive(PartialEq, Debug, Copy, Clone)]
@@ -10,8 +10,8 @@ pub enum DNucleotide {
     T
 }
 
-impl DNucleotide {
-    pub fn from_char(c: char) -> Result<Self, SequenceError> {
+impl Symbol for DNucleotide {
+    fn from_char(c: char) -> Result<Self, SequenceError> {
         match c {
             'A' => Ok(Self::A),
             'C' => Ok(Self::C),
@@ -20,8 +20,10 @@ impl DNucleotide {
             _ => Err(SequenceError::InvalidSymbol)
         }
     }
+}
 
-    pub fn get_complement(&self) -> Self {
+impl Complimentary for DNucleotide {
+    fn get_complement(&self) -> Self {
         match self {
             Self::A => Self::T,
             Self::C => Self::G,
@@ -31,58 +33,13 @@ impl DNucleotide {
     }
 }
 
-#[derive(Debug)]
-pub struct DNASequence {
-    seq: Box<Vec<DNucleotide>>
-}
+pub type DNASequence = ComplimentarySequence<DNucleotide>;
 
-impl DNASequence {
-    pub fn get_reverse_complement(&self) -> Self {
-        let sequence: Vec<_> = self.seq.iter().map(|x| x.get_complement()).rev().collect();
-        DNASequence{ seq: Box::new(sequence) }
-    }
-}
-
-impl Sequence for DNASequence {
-    fn create(seq: &str) -> Result<Self, SequenceError> {
-        let sequence: Result<Vec<_>,_> = seq.chars().map(|x| DNucleotide::from_char(x)).collect();
-        Ok( DNASequence{ seq: Box::new(sequence?) } )
-    }
-
-    fn len(&self) -> usize {
-        self.seq.len()
-    }
-}
-
-impl PartialEq for DNASequence {
-    fn eq(&self, other: &Self) -> bool {
-        self.seq == other.seq
-    }
-
-}
-
-impl Eq for DNASequence {}
-
-impl Index<usize> for DNASequence {
-    type Output = DNucleotide;
-
-    fn index(&self, index: usize) -> &Self::Output {
-        &self.seq[index]
-    }
-}
-
-impl IntoIterator for DNASequence {
-    type Item = DNucleotide;
-    type IntoIter = std::vec::IntoIter<Self::Item>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.seq.into_iter()
-    }
-}
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::sequence::Sequence;
 
     #[test]
     fn it_works() {
@@ -92,7 +49,7 @@ mod tests {
 
     fn create_sequence() -> DNASequence {
         let nucleotides = vec![DNucleotide::A, DNucleotide::T, DNucleotide::C, DNucleotide::G];
-        DNASequence{ seq: Box::new(nucleotides) }
+        DNASequence{ seq: nucleotides,  }
     }
 
     #[test]
@@ -105,14 +62,14 @@ mod tests {
     #[test]
     fn create_sequence_from_string() {
         let direct_seq = create_sequence();
-        let string_seq = DNASequence::create("ATCG").unwrap();
+        let string_seq = DNASequence::create("ATCG", "").unwrap();
         assert_eq!(direct_seq, string_seq);
     }
 
     #[test]
     fn reverse_complement() {
-        let orig = DNASequence::create("ATCG").unwrap();
-        let rev_comp = DNASequence::create("CGAT").unwrap();
+        let orig = DNASequence::create("ATCG", "").unwrap();
+        let rev_comp = DNASequence::create("CGAT", "").unwrap();
         assert_eq!(orig.get_reverse_complement(), rev_comp);
     }
 }
