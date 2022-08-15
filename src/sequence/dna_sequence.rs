@@ -48,8 +48,7 @@ mod tests {
     }
 
     fn create_sequence() -> DNASequence {
-        let nucleotides = vec![DNucleotide::A, DNucleotide::T, DNucleotide::C, DNucleotide::G];
-        DNASequence{ seq: nucleotides,  }
+        DNASequence::create("ATCG", "").unwrap()
     }
 
     #[test]

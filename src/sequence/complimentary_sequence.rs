@@ -28,6 +28,10 @@ impl<T> Sequence for ComplimentarySequence<T> where T: Complimentary + Symbol{
     fn len(&self) -> usize {
         self.seq.len()
     }
+
+    fn get_header(&self) -> Option<&str> {
+        self.header.as_deref()
+    }
 }
 
 impl<T> PartialEq for ComplimentarySequence<T> where T: Complimentary + Symbol {
@@ -55,4 +59,3 @@ impl<T> IntoIterator for ComplimentarySequence<T> where T: Complimentary + Symbo
         self.seq.into_iter()
     }
 }
-
