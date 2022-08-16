@@ -3,6 +3,7 @@ use crate::sequence_error::SequenceError;
 
 pub mod dna_sequence;
 mod complimentary_sequence;
+pub mod protein_sequence;
 
 pub trait Symbol: PartialEq {
     fn from_char(c: char) -> Result<Self, SequenceError> where Self: Sized;
